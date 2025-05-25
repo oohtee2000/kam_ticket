@@ -1,54 +1,38 @@
-// 'use client'
-// import { useState } from "react";
+'use client';
 
-// export default function Home() {
-//   const [result, setResult] = useState<Record<string, any>>({});
-//   const [loading, setLoading] = useState<boolean>(false);
-
-//   const sendEmail = async () => {
-//     setLoading(true);
-
-//     try {
-//       const response = await fetch('/api/emails', { method: 'POST' });
-
-//       const data = await response.json();
-//       setResult(data);
-//     } catch (error) {
-//       setResult({ success: false, error: "Something went wrong" });
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="p-5">
-//       <button onClick={sendEmail} className="bg-blue-500 text-white p-2 rounded">
-//         Send Test Email
-//       </button>
-
-//       {loading && <p className="mt-4">Processing...</p>}
-
-//       <pre className="mt-4 bg-gray-100 p-2">{JSON.stringify(result, null, 2)}</pre>
-//     </div>
-//   );
-// }
-
-'use client'
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { FiEdit, FiSearch } from 'react-icons/fi'; // Feather icons
+import Link from 'next/link';
 
 export default function Home() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.push("/dashboard");
-  }, [router]);
-
   return (
-    <div>
-      Redirecting to dashboard...
+    <div className="flex flex-col items-center justify-center min-h-screen px-4 py-8 bg-gray-50 dark:bg-gray-900">
+      <h1 className="mb-8 text-3xl font-bold text-center text-gray-800 dark:text-white">
+        Welcome to Kam Helpdesk
+      </h1>
+
+      <div className="grid gap-6 sm:grid-cols-2 w-full max-w-4xl">
+        {/* Create Ticket Card */}
+        <Link
+          href="/tickets/create"
+          className="flex items-center justify-center p-6 border rounded-lg shadow hover:shadow-md transition duration-200 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+        >
+          <FiEdit className="w-6 h-6 mr-3 text-blue-600" />
+          <span className="text-lg font-medium text-gray-800 dark:text-white">
+            Create Ticket
+          </span>
+        </Link>
+
+        {/* Track Ticket Card */}
+        <Link
+          href="/track-ticket"
+          className="flex items-center justify-center p-6 border rounded-lg shadow hover:shadow-md transition duration-200 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+        >
+          <FiSearch className="w-6 h-6 mr-3 text-green-600" />
+          <span className="text-lg font-medium text-gray-800 dark:text-white">
+            Track Ticket
+          </span>
+        </Link>
+      </div>
     </div>
   );
 }
-

@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, Popconfirm, message, Avatar, Spin, Modal, Form, Input, Select, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
+import { useAuth } from '@/hooks/useAuth'; 
+
 const { Option } = Select;
 
 interface User {
@@ -29,6 +31,7 @@ const ViewUsers: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [form] = Form.useForm();
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchUsers();

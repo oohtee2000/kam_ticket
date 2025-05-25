@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/useAuth'; // make sure this is the correct import
 
 // Define the ITicket interface
 interface ITicket {
