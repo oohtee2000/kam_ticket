@@ -22,7 +22,7 @@ export default function RecentTickets() {
       department: "Support",
       category: "Login Issue",
       status: "Open",
-      image: "https://via.placeholder.com/150",
+      image: null
     },
     {
       id: 2,
@@ -38,7 +38,7 @@ export default function RecentTickets() {
       department: "Development",
       category: "Feature Request",
       status: "Closed",
-      image: "https://via.placeholder.com/150",
+      image: null,
     },
   ];
 

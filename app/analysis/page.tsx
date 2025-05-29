@@ -1,42 +1,56 @@
-import type { Metadata } from "next";
-import { HelpdeskMetrics } from "@/components/dashboard/HelpdeskMetrics";
+
+// "use client";
+// import React from "react";
+// import { HelpdeskMetrics } from "@/components/dashboard/HelpdeskMetrics";
+// import MonthlyTicketsChart from "@/components/dashboard/MonthlyTicketsChart";
+// import DepartmentTicketBreakdown from "@/components/dashboard/DepartmentTicketBreakdown";
+// import HelpdeskStatisticsChart from "@/components/dashboard/HelpdeskStatisticsChart";
+// import AgentPerformanceOverview from "@/components/dashboard/AgentPerformanceOverview";
+
+// export default function HelpdeskDashboard() {
+//   return (
+//     <div className="p-6 space-y-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+//       <HelpdeskMetrics />
+
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+//         <MonthlyTicketsChart />
+//         <DepartmentTicketBreakdown />
+//       </div>
+
+//       <HelpdeskStatisticsChart />
+
+//       <AgentPerformanceOverview />
+//     </div>
+//   );
+// }
+
+
+
+"use client";
+
 import React from "react";
-import DepartmentTicketBreakdown from "@/components/dashboard/DepartmentTicketBreakdown";
-import MonthlyTicketsChart from "@/components/dashboard/MonthlyTicketsChart";
-import HelpdeskStatisticsChart from "@/components/dashboard/HelpdeskStatisticsChart";
-import RecentTickets from "@/components/dashboard/RecentTickets";
-import AgentPerformanceOverview from "@/components/dashboard/AgentPerformanceOverview";
+import dynamic from "next/dynamic";
 
-export const metadata: Metadata = {
-  title:
-    "",
-  description: "",
-};
+import { HelpdeskMetrics } from "@/components/dashboard/HelpdeskMetrics";
 
-export default function TicketAnalysis() {
+const MonthlyTicketsChart = dynamic(() => import("@/components/dashboard/MonthlyTicketsChart"), { ssr: false });
+const DepartmentTicketBreakdown = dynamic(() => import("@/components/dashboard/DepartmentTicketBreakdown"), { ssr: false });
+const HelpdeskStatisticsChart = dynamic(() => import("@/components/dashboard/HelpdeskStatisticsChart"), { ssr: false });
+const AgentPerformanceOverview = dynamic(() => import("@/components/dashboard/AgentPerformanceOverview"), { ssr: false });
+
+export default function HelpdeskDashboard() {
   return (
-    <div className="grid grid-cols-12 gap-4 md:gap-6">
-      <div className="col-span-12 space-y-6 xl:col-span-7">
-        <HelpdeskMetrics />
+    <div className="p-6 space-y-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <HelpdeskMetrics />
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <MonthlyTicketsChart />
-      </div>
-
-      <div className="col-span-12 xl:col-span-5">
         <DepartmentTicketBreakdown />
       </div>
 
-      <div className="col-span-12">
-        <HelpdeskStatisticsChart />
-      </div>
+      <HelpdeskStatisticsChart />
 
-      <div className="col-span-12 xl:col-span-5">
-        <AgentPerformanceOverview />
-      </div>
-
-      <div className="col-span-12 xl:col-span-7">
-        <RecentTickets />
-      </div>
+      <AgentPerformanceOverview />
     </div>
   );
 }
