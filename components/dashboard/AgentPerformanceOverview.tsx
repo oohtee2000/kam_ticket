@@ -1,9 +1,9 @@
 'use client'
-import { useState } from "react";
 import { Table, Dropdown, Button } from "antd";
 import { MoreOutlined } from "@ant-design/icons";
 
 export default function AgentPerformanceOverview() {
+  // Static data for agents
   const agents = [
     {
       key: "1",
@@ -23,11 +23,13 @@ export default function AgentPerformanceOverview() {
     },
   ];
 
+  // Static dropdown menu items
   const menuItems = [
     { key: "1", label: "View Details" },
     { key: "2", label: "Export Data" },
   ];
 
+  // Table column definitions with static render for Actions dropdown
   const columns = [
     {
       title: "Agent Name",

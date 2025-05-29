@@ -2,32 +2,27 @@
 import React from "react";
 import { ApexOptions } from "apexcharts";
 import ChartTab from "../common/ChartTab";
-import dynamic from "next/dynamic";
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import("react-apexcharts"), {
-  ssr: false,
-});
+import ReactApexChart from "react-apexcharts";
 
 export default function HelpdeskStatisticsChart() {
   const options: ApexOptions = {
     legend: {
-      show: true, // Show legend for clarity
+      show: true,
       position: "top",
       horizontalAlign: "left",
     },
-    colors: ["#FF5733", "#00A76F"], // Red for opened, Green for resolved
+    colors: ["#FF5733", "#00A76F"],
     chart: {
       fontFamily: "Outfit, sans-serif",
       height: 310,
-      type: "line", // Line chart for trends
+      type: "line",
       toolbar: {
-        show: false, // Hide toolbar
+        show: false,
       },
     },
     stroke: {
-      curve: "smooth", // Smooth line style
-      width: [2, 2], // Line width for datasets
+      curve: "smooth",
+      width: [2, 2],
     },
     fill: {
       type: "gradient",
@@ -37,7 +32,7 @@ export default function HelpdeskStatisticsChart() {
       },
     },
     markers: {
-      size: 4, // Visible markers for emphasis
+      size: 4,
       strokeColors: "#fff",
       strokeWidth: 2,
       hover: {
@@ -58,7 +53,7 @@ export default function HelpdeskStatisticsChart() {
     xaxis: {
       type: "category",
       categories: [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
       ],
       axisBorder: { show: false },

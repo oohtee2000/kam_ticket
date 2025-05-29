@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 import { Dropdown } from "@components/ui/dropdown/Dropdown";
@@ -9,25 +9,18 @@ import { DropdownItem } from "@components/ui/dropdown/DropdownItem";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export default function DepartmentTicketBreakdown() {
-  const [series, setSeries] = useState([{ name: "Tickets", data: [] as number[] }]);
-  const [categories, setCategories] = useState<string[]>([]);
+  // Static data instead of fetch
+  const staticData = [
+    { department: "IT", ticketCount: 45 },
+    { department: "HR", ticketCount: 30 },
+    { department: "Finance", ticketCount: 25 },
+    { department: "Marketing", ticketCount: 20 },
+    { department: "Operations", ticketCount: 15 },
+  ];
+
+  const [series] = useState([{ name: "Tickets", data: staticData.map(d => d.ticketCount) }]);
+  const [categories] = useState(staticData.map(d => d.department));
   const [isOpen, setIsOpen] = useState(false);
-
-  const fetchData = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/api/tickets/metrics/department-breakdown");
-      const data = await res.json();
-
-      setCategories(data.map((d: any) => d.department));
-      setSeries([{ name: "Tickets", data: data.map((d: any) => d.ticketCount) }]);
-    } catch (err) {
-      console.error("Failed to fetch department breakdown:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const options: ApexOptions = {
     chart: { type: "bar", height: 330, fontFamily: "Outfit, sans-serif" },

@@ -1,6 +1,6 @@
 "use client";
-import { Table, Modal, Badge, Spin, Alert } from "antd";
-import { useState, useEffect } from "react";
+import { Table, Modal, Badge } from "antd";
+import { useState } from "react";
 import Image from "next/image";
 
 // TypeScript interface for tickets
@@ -8,43 +8,47 @@ interface Ticket {
   id: number;
   title: string;
   department: string;
-  category: string;  // Changed from priority to category
+  category: string;
   status: "Resolved" | "Open" | "Closed";
   image: string | null;
 }
 
 export default function RecentTickets() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // Static tickets data instead of fetching from backend
+  const tickets: Ticket[] = [
+    {
+      id: 1,
+      title: "Cannot login to account",
+      department: "Support",
+      category: "Login Issue",
+      status: "Open",
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 2,
+      title: "Bug in payment gateway",
+      department: "Billing",
+      category: "Bug Report",
+      status: "Resolved",
+      image: null,
+    },
+    {
+      id: 3,
+      title: "Request for new feature",
+      department: "Development",
+      category: "Feature Request",
+      status: "Closed",
+      image: "https://via.placeholder.com/150",
+    },
+  ];
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
-
-  const fetchRecentTickets = async () => {
-    try {
-      const response = await fetch("https://kam-ticket-express-api.onrender.com/api/tickets/recent/latest");
-      if (!response.ok) throw new Error("Failed to fetch recent tickets");
-      const data = await response.json();
-      setTickets(data);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchRecentTickets();
-  }, []);
 
   const showImageModal = (image: string) => {
     setSelectedImage(image);
     setIsModalVisible(true);
   };
-
-  if (loading) return <Spin tip="Loading recent tickets..." />;
-  if (error) return <Alert message="Error" description={error} type="error" showIcon />;
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03]">
@@ -53,7 +57,7 @@ export default function RecentTickets() {
       <Table dataSource={tickets} rowKey="id" pagination={false}>
         <Table.Column title="Title" dataIndex="title" key="title" />
         <Table.Column title="Department" dataIndex="department" key="department" />
-        <Table.Column title="Category" dataIndex="category" key="category" /> {/* Replaced priority with category */}
+        <Table.Column title="Category" dataIndex="category" key="category" />
         <Table.Column
           title="Status"
           dataIndex="status"
@@ -71,7 +75,10 @@ export default function RecentTickets() {
           key="image"
           render={(image: string | null) =>
             image ? (
-              <a href="#" onClick={() => showImageModal(image)}>
+              <a href="#" onClick={(e) => {
+                e.preventDefault();
+                showImageModal(image);
+              }}>
                 <Image
                   src={image}
                   alt="Ticket"

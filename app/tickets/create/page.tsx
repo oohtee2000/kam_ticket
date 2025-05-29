@@ -2,18 +2,28 @@
 
 import React, { useState } from 'react'
 
+const accommodationLocations = [
+  'GCFO Quarters – Irewolede Estate',
+  'New House – Irewolede Estate',
+  'GRA Quarters – Trove Street, Flower Garden, GRA',
+  'Honourable Qtrs 1 – Legislative Qtrs Estate',
+  'Honourable Qtrs 2 – Legislative Qtrs Estate',
+  'Yellow House – Mandate III Estate',
+  'Ghosh House – Mandate III Estate',
+  'Jaspal House – Mandate III Estate',
+  'Ofa Garage',
+]
+
+const accommodationIssues = [
+  'Generator',
+  'Water/Plumbing',
+  'Electrical (ACs, lighting etc.)',
+  'Furniture',
+  'Environment (weed, fence, drainage etc.)',
+  'Others',
+]
+
 const categories: Record<string, string[]> = {
-  'Accommodation/Housing Issues': [
-    'GCFO Quarters – Irewolede Estate',
-    'New House – Irewolede Estate',
-    'GRA Quarters – Trove Street, Flower Garden, GRA',
-    'Honourable Qtrs 1 – Legislative Qtrs Estate',
-    'Honourable Qtrs 2 – Legislative Qtrs Estate',
-    'Yellow House – Mandate III Estate',
-    'Ghosh House – Mandate III Estate',
-    'Jaspal House – Mandate III Estate',
-    'Ofa Garage',
-  ],
   'Office Issue': [
     'Water/Plumbing',
     'Dispenser',
@@ -23,7 +33,7 @@ const categories: Record<string, string[]> = {
     'Others',
   ],
   'Vehicle Issue': [
-    'Periodic maintenance',
+    'Periodic Maintenance',
     'Battery',
     'Electrical/Mechanical Issue',
     'Accidents',
@@ -36,18 +46,18 @@ const categories: Record<string, string[]> = {
 const departments = [
   'HR',
   'Audit',
-  'Supply Chain/Store',
-  'Admin/Health/Security/Legal',
+  'Supply Chain / Store',
+  'Admin / Health / Security / Legal',
   'Production',
-  'Account/Finance',
-  'Electrical/Maintenance',
+  'Accounts / Finance',
+  'Electrical / Maintenance',
   'IT',
 ]
 
 const staffLocations = [
   'KAM HQ',
   'KSICL – Jimba',
-  'KSICL – Sagamu/Hullmac',
+  'KSICL – Sagamu / Hullmac',
   'KAM Haulage',
   'Dimkit Ganmo',
   'Dimkit Kaduna',
@@ -56,229 +66,178 @@ const staffLocations = [
 
 const RaiseTicketPage = () => {
   const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    staffLocation: '',
+    department: '',
+    category: '',
+    accLocation: '',
+    accIssue: '',
+    subcategory: '',
     title: '',
     details: '',
     date: '',
-    assignedTo: '',
-    status: '',
-    createdBy: '',
-    department: '',
-    staffLocation: '',
-    category: '',
-    subcategory: '',
+    screenshot: null as File | null,
   })
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target
-
-    if (name === 'category') {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === 'category' && {
         subcategory: '',
-      }))
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }))
-    }
+        accLocation: '',
+        accIssue: '',
+      }),
+    }))
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null
+    setFormData((prev) => ({ ...prev, screenshot: file }))
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     console.log('Ticket Submitted:', formData)
+    alert('Your ticket has been successfully submitted.')
 
-    alert('Ticket Raised Successfully!')
     setFormData({
+      fullName: '',
+      email: '',
+      phone: '',
+      staffLocation: '',
+      department: '',
+      category: '',
+      accLocation: '',
+      accIssue: '',
+      subcategory: '',
       title: '',
       details: '',
       date: '',
-      assignedTo: '',
-      status: '',
-      createdBy: '',
-      department: '',
-      staffLocation: '',
-      category: '',
-      subcategory: '',
+      screenshot: null,
     })
   }
 
+  const inputClass = 'w-full mt-1 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+
   return (
-    <div className="container mx-auto max-w-3xl px-4 pt-[120px] pb-10">
-      <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Raise a New Ticket</h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Title */}
+    <div className="container mx-auto max-w-3xl px-4 pb-12 pt-5">
+
+      <div className="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">Raise a New Support Ticket</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Personal Information */}
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
-            <input
-              type="text"
-              name="title"
-              id="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            />
+            <label className="block text-sm font-medium text-gray-700">Full Name</label>
+            <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} required className={inputClass} />
           </div>
 
-          {/* Details */}
           <div>
-            <label htmlFor="details" className="block text-sm font-medium text-gray-700">Details</label>
-            <textarea
-              name="details"
-              id="details"
-              rows={4}
-              value={formData.details}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            />
+            <label className="block text-sm font-medium text-gray-700">Email Address</label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} required className={inputClass} />
           </div>
 
-          {/* Date */}
           <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
-            <input
-              type="date"
-              name="date"
-              id="date"
-              value={formData.date}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            />
+            <label className="block text-sm font-medium text-gray-700">Phone Number (CUG Preferred)</label>
+            <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required className={inputClass} />
           </div>
 
-          {/* Assigned To */}
+          {/* Work Info */}
           <div>
-            <label htmlFor="assignedTo" className="block text-sm font-medium text-gray-700">Assigned To</label>
-            <input
-              type="text"
-              name="assignedTo"
-              id="assignedTo"
-              value={formData.assignedTo}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-
-          {/* Status */}
-          <div>
-            <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
-            <select
-              name="status"
-              id="status"
-              value={formData.status}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select Status</option>
-              <option value="Open">Open</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Closed">Closed</option>
+            <label className="block text-sm font-medium text-gray-700">Staff Location</label>
+            <select name="staffLocation" value={formData.staffLocation} onChange={handleChange} required className={inputClass}>
+              <option value="">-- Select Location --</option>
+              {staffLocations.map((loc) => <option key={loc} value={loc}>{loc}</option>)}
             </select>
           </div>
 
-          {/* Created By */}
           <div>
-            <label htmlFor="createdBy" className="block text-sm font-medium text-gray-700">Created By</label>
-            <input
-              type="text"
-              name="createdBy"
-              id="createdBy"
-              value={formData.createdBy}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-
-          {/* Department */}
-          <div>
-            <label htmlFor="department" className="block text-sm font-medium text-gray-700">Department</label>
-            <select
-              name="department"
-              id="department"
-              value={formData.department}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select Department</option>
-              {departments.map((dept) => (
-                <option key={dept} value={dept}>{dept}</option>
-              ))}
+            <label className="block text-sm font-medium text-gray-700">Department</label>
+            <select name="department" value={formData.department} onChange={handleChange} required className={inputClass}>
+              <option value="">-- Select Department --</option>
+              {departments.map((dept) => <option key={dept} value={dept}>{dept}</option>)}
             </select>
           </div>
 
-          {/* Staff Location */}
+          {/* Category & Subcategory */}
           <div>
-            <label htmlFor="staffLocation" className="block text-sm font-medium text-gray-700">Staff Location</label>
-            <select
-              name="staffLocation"
-              id="staffLocation"
-              value={formData.staffLocation}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select Location</option>
-              {staffLocations.map((loc) => (
-                <option key={loc} value={loc}>{loc}</option>
-              ))}
+            <label className="block text-sm font-medium text-gray-700">Category</label>
+            <select name="category" value={formData.category} onChange={handleChange} required className={inputClass}>
+              <option value="">-- Select Category --</option>
+              <option value="Accommodation/Housing Issues">Accommodation / Housing Issues</option>
+              {Object.keys(categories).map((cat) => <option key={cat} value={cat}>{cat}</option>)}
             </select>
           </div>
 
-          {/* Category */}
-          <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
-            <select
-              name="category"
-              id="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select Category</option>
-              {Object.keys(categories).map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
+          {/* Accommodation Fields */}
+          {formData.category === 'Accommodation/Housing Issues' && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Accommodation Location</label>
+                <select name="accLocation" value={formData.accLocation} onChange={handleChange} required className={inputClass}>
+                  <option value="">-- Select Location --</option>
+                  {accommodationLocations.map((loc) => <option key={loc} value={loc}>{loc}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Accommodation Issue</label>
+                <select name="accIssue" value={formData.accIssue} onChange={handleChange} required className={inputClass}>
+                  <option value="">-- Select Issue --</option>
+                  {accommodationIssues.map((issue) => <option key={issue} value={issue}>{issue}</option>)}
+                </select>
+              </div>
+            </>
+          )}
 
-          {/* Subcategory */}
-          <div>
-            <label htmlFor="subcategory" className="block text-sm font-medium text-gray-700">Subcategory</label>
-            <select
-              name="subcategory"
-              id="subcategory"
-              value={formData.subcategory}
-              onChange={handleChange}
-              required
-              disabled={!formData.category}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select Subcategory</option>
-              {formData.category &&
-                categories[formData.category].map((sub) => (
+          {/* Subcategory for other categories */}
+          {formData.category && formData.category !== 'Accommodation/Housing Issues' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Subcategory</label>
+              <select name="subcategory" value={formData.subcategory} onChange={handleChange} required className={inputClass}>
+                <option value="">-- Select Subcategory --</option>
+                {categories[formData.category]?.map((sub) => (
                   <option key={sub} value={sub}>{sub}</option>
                 ))}
-            </select>
+              </select>
+            </div>
+          )}
+
+          {/* Ticket Details */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Complaint Title</label>
+            <input type="text" name="title" value={formData.title} onChange={handleChange} required className={inputClass} />
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white font-medium py-2 px-4 rounded-md hover:bg-blue-700 transition"
-          >
-            Submit Ticket
-          </button>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Detailed Description</label>
+            <textarea name="details" rows={4} value={formData.details} onChange={handleChange} required className={inputClass} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Date of Complaint</label>
+            <input type="date" name="date" value={formData.date} onChange={handleChange} required className={inputClass} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Attach Screenshot (optional)</label>
+            <input type="file" accept="image/*" onChange={handleFileChange} className={inputClass} />
+          </div>
+
+          {/* Submit */}
+          <div>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300"
+            >
+              Submit Ticket
+            </button>
+          </div>
         </form>
       </div>
     </div>

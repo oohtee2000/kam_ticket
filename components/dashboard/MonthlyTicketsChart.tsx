@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { MoreDotIcon } from "@/icons";
@@ -9,22 +9,10 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export default function MonthlyTicketsChart() {
-  const [monthlyData, setMonthlyData] = useState<number[]>(Array(12).fill(0));
+  // Replace fetched data with static data
+  const staticMonthlyData = [12, 19, 15, 22, 18, 24, 20, 17, 23, 21, 16, 25];
+  const [monthlyData] = useState<number[]>(staticMonthlyData);
   const [isOpen, setIsOpen] = useState(false);
-
-  const fetchMonthlyData = async () => {
-    try {
-      const res = await fetch("https://kam-ticket-express-api.onrender.com/api/tickets/metrics/monthly-resolved");
-      const data = await res.json();
-      setMonthlyData(data);
-    } catch (error) {
-      console.error("Failed to fetch monthly ticket data", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchMonthlyData();
-  }, []);
 
   const options: ApexOptions = {
     colors: ["#00A76F"],
@@ -49,8 +37,10 @@ export default function MonthlyTicketsChart() {
       colors: ["transparent"],
     },
     xaxis: {
-      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      categories: [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      ],
       axisBorder: { show: false },
       axisTicks: { show: false },
     },

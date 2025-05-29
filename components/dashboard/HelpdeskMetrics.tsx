@@ -1,27 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Badge from "@components/ui/badge/Badge";
 import { ArrowDownIcon, ArrowUpIcon, TicketIcon, CheckCircleIcon } from "@/icons";
-import axios from "axios"; // Make sure you install axios if not already
 
 export const HelpdeskMetrics = () => {
-  const [metrics, setMetrics] = useState({
-    totalTickets: 0,
-    resolvedTickets: 0,
+  // Static data instead of fetching from backend
+  const [metrics] = useState({
+    totalTickets: 120,    // static example value
+    resolvedTickets: 85,  // static example value
   });
-
-  useEffect(() => {
-    const fetchMetrics = async () => {
-      try {
-        const response = await axios.get("https://kam-ticket-express-api.onrender.com/api/tickets/metrics/counts"); // Adjust if your API URL is different
-        setMetrics(response.data);
-      } catch (error) {
-        console.error("Error fetching ticket metrics:", error);
-      }
-    };
-
-    fetchMetrics();
-  }, []);
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
@@ -42,7 +29,7 @@ export const HelpdeskMetrics = () => {
           </div>
           <Badge color="success">
             <ArrowUpIcon />
-            {/* You can show growth % here if you want */}
+            {/* Static badge, no growth % */}
           </Badge>
         </div>
       </div>
@@ -64,7 +51,7 @@ export const HelpdeskMetrics = () => {
 
           <Badge color="error">
             <ArrowDownIcon className="text-error-500" />
-            {/* You can show decrease % here if you want */}
+            {/* Static badge, no decrease % */}
           </Badge>
         </div>
       </div>

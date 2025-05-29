@@ -1,34 +1,31 @@
 'use client'
 
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState, ChangeEvent, useEffect, useRef } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 
 // Define the ticket type
 type Ticket = {
-    id: number
-    title: string
-    details: string
-    date: string
-    assignedTo: string
-    status: string
-    createdBy: string
-    department: string
-    images?: string[] // optional image URLs
-  }
-  
+  id: number
+  title: string
+  details: string
+  date: string
+  assignedTo: string
+  status: string
+  createdBy: string
+  department: string
+  images?: string[] // optional image URLs
+}
 
 const tickets: Ticket[] = [
-  // Example ticket object to avoid empty array issues
-   { id: 1, title: 'Sample Ticket', details: 'Details here', date: '2025-05-25', assignedTo: 'Alice', status: 'Open', createdBy: 'Bob', department: 'IT' }, 
-   { id: 2, title: 'Sample Ticket', details: 'Details here', date: '2025-05-25', assignedTo: 'Alice', status: 'Open', createdBy: 'Bob', department: 'IT' },
-   { id: 3, title: 'Sample Ticket', details: 'Details here', date: '2025-05-25', assignedTo: 'Alice', status: 'Open', createdBy: 'Bob', department: 'IT' }
+  { id: 1, title: 'Sample Ticket', details: 'Details here', date: '2025-05-25', assignedTo: 'Alice', status: 'Open', createdBy: 'Bob', department: 'IT' }, 
+  { id: 2, title: 'Sample Ticket', details: 'Details here', date: '2025-05-25', assignedTo: 'Alice', status: 'Open', createdBy: 'Bob', department: 'IT' },
+  { id: 3, title: 'Sample Ticket', details: 'Details here', date: '2025-05-25', assignedTo: 'Alice', status: 'Open', createdBy: 'Bob', department: 'IT' }
 ]
 
 const uniqueValues = (key: Exclude<keyof Ticket, 'id'>): string[] => {
-    const set = new Set<string>(tickets.map((t) => t[key] as string))
-    return Array.from(set)
-  }
-  
+  const set = new Set<string>(tickets.map((t) => t[key] as string))
+  return Array.from(set)
+}
 
 const parseTicketDateToISO = (dateStr: string): string | null => {
   const date = new Date(dateStr)
@@ -54,6 +51,21 @@ const Page = () => {
       return acc
     }, {} as Record<number, boolean>)
   )
+
+  // Ref to the filter container for height calculation
+  const filterRef = useRef<HTMLDivElement>(null)
+  const [filterHeight, setFilterHeight] = useState(0)
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (filterRef.current) {
+        setFilterHeight(filterRef.current.getBoundingClientRect().height)
+      }
+    }
+    updateHeight()
+    window.addEventListener('resize', updateHeight)
+    return () => window.removeEventListener('resize', updateHeight)
+  }, [filtersOpen])
 
   const handleFilterChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -85,9 +97,10 @@ const Page = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-3xl space-y-6 pt-[260px]">
-      {/* Filter section with toggle button and filters together */}
+    <div className="container mx-auto p-6 max-w-3xl space-y-6">
+      {/* Filter section - fixed */}
       <div
+        ref={filterRef}
         className="fixed top-16 left-1/2 transform -translate-x-1/2 w-full max-w-3xl px-4 sm:px-6 z-50 bg-white p-4 shadow-md border border-gray-200 rounded-md"
         style={{ borderRadius: 0 }}
       >
@@ -227,11 +240,11 @@ const Page = () => {
         )}
       </div>
 
+      {/* Spacer div to push tickets below fixed filter */}
+      <div style={{ height: filterHeight }} />
+
       {/* Tickets List */}
-      <div className="mt-8 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-6">
-
-
-
+      <div className="mt-8 grid grid-cols-1 gap-6">
         {filteredTickets.length === 0 ? (
           <p className="text-center text-gray-500 mt-10">No tickets found for selected filters.</p>
         ) : (
@@ -267,61 +280,54 @@ const Page = () => {
                   </button>
                 </div>
 
-
-
-
-                
-
-                {/* Body */}
                 {openTickets[id] && (
-  <div className="px-6 py-4 space-y-6 transition-all bg-white rounded-xl shadow-sm">
-    <div>
-      <h4 className="text-sm font-semibold text-gray-500">Details</h4>
-      <p className="text-base text-gray-800">{details}</p>
-    </div>
+                  <div className="px-6 py-4 space-y-6 transition-all bg-white rounded-xl shadow-sm">
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-500">Details</h4>
+                      <p className="text-base text-gray-700">{details}</p>
+                    </div>
 
-    <div>
-      <h4 className="text-sm font-semibold text-gray-500">Ticket Date</h4>
-      <p className="text-base text-gray-800">{date}</p>
-    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-500">Date</h4>
+                        <p className="text-gray-700">{date}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-500">Assigned To</h4>
+                        <p className="text-gray-700">{assignedTo}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-500">Status</h4>
+                        <p className="text-gray-700">{status}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-500">Created By</h4>
+                        <p className="text-gray-700">{createdBy}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-500">Department</h4>
+                        <p className="text-gray-700">{department}</p>
+                      </div>
+                    </div>
 
-    <div>
-      <h4 className="text-sm font-semibold text-gray-500">Assigned To</h4>
-      <p className="text-base text-gray-800">{assignedTo}</p>
-    </div>
-
-    <div>
-      <h4 className="text-sm font-semibold text-gray-500">Status</h4>
-      <p className="text-base text-gray-800">{status}</p>
-    </div>
-
-    <div>
-      <h4 className="text-sm font-semibold text-gray-500">Created By</h4>
-      <p className="text-base text-gray-800">{createdBy}</p>
-    </div>
-
-    <div>
-      <h4 className="text-sm font-semibold text-gray-500">Department</h4>
-      <p className="text-base text-gray-800">{department}</p>
-    </div>
-
-    <div>
-      <h4 className="text-sm font-semibold text-gray-500 mb-2">Attached Images</h4>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
-          <img
-            src="https://cdn.pixabay.com/photo/2020/05/14/02/07/office-5169618_1280.jpg"
-            alt="Ticket related"
-            className="w-full h-48 object-cover transition-transform hover:scale-105"
-          />
-        </div>
-        {/* Add more images if needed */}
-        {/* <div>...</div> */}
-      </div>
-    </div>
-  </div>
-)}
-
+                    {images && images.length > 0 && (
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-500">Images</h4>
+                        <div className="flex space-x-4 overflow-x-auto py-2">
+                          {images.map((imgUrl, idx) => (
+                            <img
+                              key={idx}
+                              src={imgUrl}
+                              alt={`Ticket Image ${idx + 1}`}
+                              className="w-32 h-24 object-cover rounded-lg"
+                              loading="lazy"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )
           )
