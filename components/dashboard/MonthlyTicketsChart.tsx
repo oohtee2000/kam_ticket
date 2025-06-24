@@ -1,18 +1,41 @@
 "use client";
-import { useState } from "react";
-import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+import { ApexOptions } from "apexcharts";
 import { MoreDotIcon } from "@/icons";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-export default function MonthlyTicketsChart() {
-  // Replace fetched data with static data
-  const staticMonthlyData = [12, 19, 15, 22, 18, 24, 20, 17, 23, 21, 16, 25];
-  const [monthlyData] = useState<number[]>(staticMonthlyData);
-  const [isOpen, setIsOpen] = useState(false);
+export default function MonthlyTicketsChartTemplate() {
+  const [monthlyData, setMonthlyData] = useState<number[]>(new Array(12).fill(0)); // default 12 months
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMonthlyData = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tickets/metrics/monthly-resolved`);
+        const data = await res.json();
+
+        // Initialize all 12 months with 0
+        const resolvedPerMonth = new Array(12).fill(0);
+
+        data.forEach((item: any) => {
+          const monthIndex = item.month - 1; // JS months are 0-indexed
+          resolvedPerMonth[monthIndex] = item.resolvedCount;
+        });
+
+        setMonthlyData(resolvedPerMonth);
+      } catch (error) {
+        console.error("Failed to fetch monthly data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMonthlyData();
+  }, []);
 
   const options: ApexOptions = {
     colors: ["#00A76F"],
@@ -72,47 +95,37 @@ export default function MonthlyTicketsChart() {
     },
   ];
 
-  function toggleDropdown() {
-    setIsOpen(!isOpen);
-  }
-
-  function closeDropdown() {
-    setIsOpen(false);
-  }
-
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
           Monthly Tickets
         </h3>
-
         <div className="relative inline-block">
-          <button onClick={toggleDropdown} className="dropdown-toggle">
+          <button className="dropdown-toggle">
             <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
           </button>
-          <Dropdown isOpen={isOpen} onClose={closeDropdown} className="w-40 p-2">
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-            >
-              View Details
-            </DropdownItem>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-            >
-              Export Data
-            </DropdownItem>
+          <Dropdown isOpen={false} onClose={() => {}} className="w-40 p-2">
+            <DropdownItem onItemClick={() => {}}>View Details</DropdownItem>
+            <DropdownItem onItemClick={() => {}}>Export Data</DropdownItem>
           </Dropdown>
         </div>
       </div>
 
-      <div className="max-w-full overflow-x-auto custom-scrollbar">
-        <div className="-ml-5 min-w-[650px] xl:min-w-full pl-2">
-          <ReactApexChart options={options} series={series} type="bar" height={180} />
+      {loading ? (
+        <p className="text-gray-500 mt-4">Loading chart...</p>
+      ) : (
+        <div className="max-w-full overflow-x-auto custom-scrollbar">
+          <div className="-ml-5 min-w-[650px] xl:min-w-full pl-2">
+            <ReactApexChart
+              options={options}
+              series={series}
+              type="bar"
+              height={180}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -1,3 +1,5 @@
+// SidebarContext.tsx(C:\Next\kam\kam_ticket\kam_ticket-master\context\SidebarContext.tsx)
+
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 
@@ -27,7 +29,7 @@ export const useSidebar = () => {
 export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isHovered, setIsHovered] = useState(false);

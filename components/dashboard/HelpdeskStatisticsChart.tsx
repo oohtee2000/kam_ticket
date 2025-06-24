@@ -1,28 +1,63 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import axios from "axios";
 import { ApexOptions } from "apexcharts";
-import ChartTab from "../common/ChartTab";
-import ReactApexChart from "react-apexcharts";
+
+// Dynamic import of ReactApexChart
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+});
 
 export default function HelpdeskStatisticsChart() {
+  const [chartType, setChartType] = useState<"monthly" | "quarterly" | "yearly">("monthly");
+  const [categories, setCategories] = useState<string[]>([]);
+  const [opened, setOpened] = useState<number[]>([]);
+  const [resolved, setResolved] = useState<number[]>([]);
+
+  useEffect(() => {
+    const fetchChartData = async () => {
+      try {
+        const openedRes = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/tickets/metrics/time-distribution?type=${chartType}`
+        );
+        const resolvedRes = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/tickets/metrics/time-distribution?type=${chartType}&status=resolved`
+        );
+
+        const formatLabel = (item: any) => {
+          if (chartType === "monthly") return `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][item.month - 1]} ${item.year}`;
+          if (chartType === "quarterly") return `Q${item.quarter} ${item.year}`;
+          return `${item.year}`;
+        };
+
+        setCategories(openedRes.data.map(formatLabel));
+        setOpened(openedRes.data.map((i: any) => i.ticketCount));
+        setResolved(resolvedRes.data.map((i: any) => i.ticketCount));
+      } catch (err) {
+        console.error("Failed to fetch chart data", err);
+      }
+    };
+
+    fetchChartData();
+  }, [chartType]);
+
   const options: ApexOptions = {
-    legend: {
-      show: true,
-      position: "top",
-      horizontalAlign: "left",
-    },
-    colors: ["#FF5733", "#00A76F"],
     chart: {
-      fontFamily: "Outfit, sans-serif",
+      type: "area",
       height: 310,
-      type: "line",
-      toolbar: {
-        show: false,
-      },
+      toolbar: { show: false },
+      fontFamily: "Outfit, sans-serif",
     },
     stroke: {
       curve: "smooth",
       width: [2, 2],
+    },
+    colors: ["#FF5733", "#00A76F"],
+    markers: {
+      size: 4,
+      strokeColors: "#fff",
+      hover: { size: 6 },
     },
     fill: {
       type: "gradient",
@@ -31,77 +66,53 @@ export default function HelpdeskStatisticsChart() {
         opacityTo: 0,
       },
     },
-    markers: {
-      size: 4,
-      strokeColors: "#fff",
-      strokeWidth: 2,
-      hover: {
-        size: 6,
-      },
-    },
-    grid: {
-      xaxis: { lines: { show: false } },
-      yaxis: { lines: { show: true } },
-    },
-    dataLabels: { enabled: false },
     tooltip: {
-      enabled: true,
-      y: {
-        formatter: (val: number) => `${val} Tickets`,
-      },
+      y: { formatter: (val: number) => `${val} Tickets` },
     },
     xaxis: {
+      categories,
       type: "category",
-      categories: [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-      ],
-      axisBorder: { show: false },
-      axisTicks: { show: false },
     },
     yaxis: {
-      labels: {
-        style: { fontSize: "12px", colors: ["#6B7280"] },
+      title: {
+        text: "Tickets",
+        style: { fontSize: "14px" },
       },
-      title: { text: "Tickets", style: { fontSize: "14px" } },
     },
+    legend: {
+      show: true,
+      position: "top",
+      horizontalAlign: "left",
+    },
+    dataLabels: { enabled: false },
   };
 
   const series = [
-    {
-      name: "Tickets Opened",
-      data: [250, 230, 210, 220, 270, 260, 280, 290, 300, 320, 330, 310],
-    },
-    {
-      name: "Tickets Resolved",
-      data: [200, 180, 190, 210, 220, 240, 250, 260, 270, 300, 310, 290],
-    },
+    { name: "Tickets Opened", data: opened },
+    { name: "Tickets Resolved", data: resolved },
   ];
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-      <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
-        <div className="w-full">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Helpdesk Statistics
-          </h3>
-          <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-            Overview of opened and resolved tickets per month
-          </p>
+    <div className="rounded-2xl border p-5 bg-white dark:bg-white/[0.03]">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between mb-4">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">Helpdesk Statistics</h3>
+          <p className="text-sm text-gray-500">Overview of opened and resolved tickets</p>
         </div>
-        <div className="flex items-start w-full gap-3 sm:justify-end">
-          <ChartTab />
-        </div>
+        <select
+          className="border p-1 rounded text-sm"
+          value={chartType}
+          onChange={(e) => setChartType(e.target.value as any)}
+        >
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="yearly">Yearly</option>
+        </select>
       </div>
 
-      <div className="max-w-full overflow-x-auto custom-scrollbar">
-        <div className="min-w-[1000px] xl:min-w-full">
-          <ReactApexChart
-            options={options}
-            series={series}
-            type="area"
-            height={310}
-          />
+      <div className="max-w-full overflow-x-auto">
+        <div className="min-w-[800px] xl:min-w-full">
+          <ReactApexChart options={options} series={series} type="area" height={310} />
         </div>
       </div>
     </div>

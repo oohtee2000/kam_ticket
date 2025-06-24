@@ -15,7 +15,7 @@ export default function Login() {
       return;
     }
 
-    const res = await fetch('https://kam-ticket-express-api.onrender.com/api/auth/login', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
@@ -26,10 +26,10 @@ export default function Login() {
       localStorage.setItem('token', data.token);
       alert(`Welcome ${data.user.name}`);
 
-      window.location.href = "/dashboard";
+      window.location.href = "/home";
 
 
-      // Redirect to dashboard or other protected routes
+      // Redirect to home or other protected routes
     } else {
       setError(data.message || 'Login failed');
     }

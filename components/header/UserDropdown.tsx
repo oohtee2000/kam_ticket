@@ -42,7 +42,7 @@
 //       >
 //         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
 //           <Image
-//             src={`https://kam-ticket-express-api.onrender.com/uploads/${profileImage}`}
+//             src={`${process.env.IMAGE_API_PATH}/${profileImage}`}
 //             alt="User Avatar"
 //             width={44}
 //             height={44}
@@ -171,7 +171,7 @@ const UserDropdown: React.FC = () => {
       <div className="h-8 w-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-gray-600">
   {user?.profile_picture ? (
     <img
-      src={`https://kam-ticket-express-api.onrender.com/uploads/${user.profile_picture}`}
+      src={`${process.env.IMAGE_API_PATH}/${user.profile_picture}`}
       alt="User Avatar"
       className="w-full h-full object-cover"
     />

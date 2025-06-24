@@ -11,8 +11,8 @@ import { useRouter } from 'next/navigation';
 
 const fetchReassignData = async () => {
     const [userResponse, ticketResponse] = await Promise.all([
-        fetch('https://kam-ticket-express-api.onrender.com/api/users'),
-        fetch('https://kam-ticket-express-api.onrender.com/api/tickets'),
+        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users`),
+        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tickets`),
     ]);
 
     if (!userResponse.ok || !ticketResponse.ok) {
@@ -74,9 +74,9 @@ const ReassignTicket = () => {
                     <Button 
                         type="primary" 
                         className="bg-blue-600 hover:bg-blue-700 text-white"
-                        onClick={() => router.push('/dashboard')}
+                        onClick={() => router.push('/home')}
                     >
-                        Go to Dashboard
+                        Go to Home
                     </Button>
                 </div>
             </div>

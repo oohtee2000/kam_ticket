@@ -101,27 +101,83 @@ const RaiseTicketPage = () => {
     setFormData((prev) => ({ ...prev, screenshot: file }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Ticket Submitted:', formData)
-    alert('Your ticket has been successfully submitted.')
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   console.log('Ticket Submitted:', formData)
+  //   alert('Your ticket has been successfully submitted.')
 
-    setFormData({
-      fullName: '',
-      email: '',
-      phone: '',
-      staffLocation: '',
-      department: '',
-      category: '',
-      accLocation: '',
-      accIssue: '',
-      subcategory: '',
-      title: '',
-      details: '',
-      date: '',
-      screenshot: null,
-    })
+  //   setFormData({
+  //     fullName: '',
+  //     email: '',
+  //     phone: '',
+  //     staffLocation: '',
+  //     department: '',
+  //     category: '',
+  //     accLocation: '',
+  //     accIssue: '',
+  //     subcategory: '',
+  //     title: '',
+  //     details: '',
+  //     date: '',
+  //     screenshot: null,
+  //   })
+  // }
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+  
+    const payload = new FormData()
+    payload.append('name', formData.fullName)
+    payload.append('email', formData.email)
+    payload.append('phone', formData.phone)
+    payload.append('location', formData.staffLocation || formData.accLocation)
+    payload.append('department', formData.department)
+    payload.append('category', formData.category)
+    payload.append(
+      'subCategory',
+      formData.category === 'Accommodation/Housing Issues'
+        ? formData.accIssue
+        : formData.subcategory
+    )
+    payload.append('otherSubCategory', '') // optionally allow extra input in future
+    payload.append('title', formData.title)
+    payload.append('details', formData.details)
+    if (formData.screenshot) {
+      payload.append('image', formData.screenshot)
+    }
+  
+    try {
+      const res = await fetch('http://localhost:5000/api/tickets', {
+        method: 'POST',
+        body: payload,
+      })
+  
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Submission failed')
+  
+      alert('Ticket submitted successfully!')
+      setFormData({
+        fullName: '',
+        email: '',
+        phone: '',
+        staffLocation: '',
+        department: '',
+        category: '',
+        accLocation: '',
+        accIssue: '',
+        subcategory: '',
+        title: '',
+        details: '',
+        date: '',
+        screenshot: null,
+      })
+    } catch (err: any) {
+      console.error(err)
+      alert('Failed to submit ticket. Check console for details.')
+    }
   }
+  
 
   const inputClass = 'w-full mt-1 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
 

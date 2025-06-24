@@ -20,7 +20,7 @@ export const handleAssignUser = async ({
   
     try {
       const response = await fetch(
-        `https://kam-ticket-express-api.onrender.com/api/tickets/${selectedTicket}/assign`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/tickets/${selectedTicket}/assign`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

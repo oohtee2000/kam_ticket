@@ -59,7 +59,7 @@ const CreateTicket: React.FC = () => {
         }
 
         try {
-            const response = await fetch("https://kam-ticket-express-api.onrender.com/api/tickets", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tickets`, {
                 method: "POST",
                 body: formDataObj, // Send formData directly
             });
@@ -148,13 +148,13 @@ const CreateTicket: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-screen-xl mx-auto px-4 py-6">
+        <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
                 <h2 className="text-xl font-semibold text-gray-800">Create a New Ticket</h2>
                 <nav>
                     <ol className="flex items-center gap-1.5">
                         <li>
-                            <Link className="text-sm text-gray-500" href="/">Home</Link>
+                            <Link className="text-sm text-gray-500" href="/home">Home</Link>
                         </li>
                         <li className="text-sm text-gray-800">Create Ticket</li>
                     </ol>

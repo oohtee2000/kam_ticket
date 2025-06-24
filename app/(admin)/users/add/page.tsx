@@ -50,7 +50,7 @@ const AddUser: React.FC = () => {
         }
 
         try {
-            const response = await fetch("https://kam-ticket-express-api.onrender.com/api/users", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users`, {
                 method: "POST",
                 body: formDataObj,
             });
@@ -101,7 +101,7 @@ const AddUser: React.FC = () => {
                 <h2 className="text-xl font-semibold text-gray-800">Add New User</h2>
                 <nav>
                     <ol className="flex items-center gap-1.5">
-                        <li><Link className="text-sm text-gray-500" href="/">Home</Link></li>
+                        <li><Link className="text-sm text-gray-500" href="/home">Home</Link></li>
                         <li className="text-sm text-gray-800">Add User</li>
                     </ol>
                 </nav>

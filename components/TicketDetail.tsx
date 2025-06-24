@@ -19,7 +19,7 @@ const TicketDetails = ({ id }: { id: string }) => {
 
     const fetchTicket = async () => {
         try {
-            const response = await fetch(`https://kam-ticket-express-api.onrender.com/api/tickets/${id}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tickets/${id}`);
             if (!response.ok) throw new Error('Ticket not found');
             const data = await response.json();
             setTicket(data);

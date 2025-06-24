@@ -38,7 +38,7 @@
 //   );
 // }
 
-
+// layout.tsx(C:\Next\kam\kam_ticket\kam_ticket-master\app\(admin)\layout.tsx)
 
 'use client'
 

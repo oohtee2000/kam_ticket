@@ -1,14 +1,38 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Badge from "@components/ui/badge/Badge";
 import { ArrowDownIcon, ArrowUpIcon, TicketIcon, CheckCircleIcon } from "@/icons";
 
 export const HelpdeskMetrics = () => {
-  // Static data instead of fetching from backend
-  const [metrics] = useState({
-    totalTickets: 120,    // static example value
-    resolvedTickets: 85,  // static example value
+  const [metrics, setMetrics] = useState({
+    totalTickets: 0,
+    resolvedTickets: 0,
   });
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tickets/metrics/counts`);
+        if (!response.ok) throw new Error("Failed to fetch metrics");
+
+        const data = await response.json();
+        setMetrics(data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching metrics:", err);
+        setError("Failed to load metrics.");
+        setLoading(false);
+      }
+    };
+
+    fetchMetrics();
+  }, []);
+
+  if (loading) return <p>Loading metrics...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
@@ -29,7 +53,6 @@ export const HelpdeskMetrics = () => {
           </div>
           <Badge color="success">
             <ArrowUpIcon />
-            {/* Static badge, no growth % */}
           </Badge>
         </div>
       </div>
@@ -48,10 +71,8 @@ export const HelpdeskMetrics = () => {
               {metrics.resolvedTickets}
             </h4>
           </div>
-
           <Badge color="error">
             <ArrowDownIcon className="text-error-500" />
-            {/* Static badge, no decrease % */}
           </Badge>
         </div>
       </div>

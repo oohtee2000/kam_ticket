@@ -1,17 +1,15 @@
-// app/components/Navbar.tsx or components/Navbar.tsx (depending on your folder structure)
+// components/Navbar.tsx
 import Link from "next/link";
 
 const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
-      <div className="container flex h-16 items-center px-4">
-        {/* Logo */}
-        <div className="flex items-center">
-          <Link href="/" className="flex items-center">
-            <span className="text-xl font-bold text-blue-600">Kam</span>
-            <span className="ml-1 text-xl font-medium">Helpdesk</span>
-          </Link>
-        </div>
+      <div className="container mx-auto flex h-16 items-center justify-center px-4">
+        {/* Centered Brand */}
+        <Link href="/" className="flex items-center space-x-1 text-2xl font-semibold text-gray-800 hover:text-blue-600 transition-colors">
+          <span className="text-blue-600 font-bold">Kam</span>
+          <span>Helpdesk</span>
+        </Link>
       </div>
     </nav>
   );

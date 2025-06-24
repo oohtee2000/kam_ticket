@@ -35,7 +35,7 @@ const TicketTracking: React.FC = () => {
         setLoading(true);
         setError('');
         try {
-            const response = await fetch(`https://kam-ticket-express-api.onrender.com/api/tickets/${ticketId}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tickets/${ticketId}`);
             const data = await response.json();
 
             if (response.ok) {
@@ -64,7 +64,7 @@ const TicketTracking: React.FC = () => {
                 <nav>
                     <ol className="flex items-center gap-1.5">
                         <li>
-                            <Link className="text-sm text-gray-500" href="/">Home</Link>
+                            <Link className="text-sm text-gray-500" href="/home">Home</Link>
                         </li>
                         <li className="text-sm text-gray-800">Track Ticket</li>
                     </ol>

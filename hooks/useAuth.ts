@@ -27,7 +27,7 @@ export function useAuth() {
       }
 
       try {
-        const authResponse = await fetch("https://kam-ticket-express-api.onrender.com/api/auth/protected", {
+        const authResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/protected`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -38,7 +38,7 @@ export function useAuth() {
 
         if (!userId) throw new Error("User ID not found");
 
-        const userResponse = await fetch(`https://kam-ticket-express-api.onrender.com/api/users/${userId}`);
+        const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${userId}`);
         if (!userResponse.ok) throw new Error("User data fetch failed");
 
         const userData: User = await userResponse.json();

@@ -40,7 +40,7 @@ const ViewUsers: React.FC = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await fetch("https://kam-ticket-express-api.onrender.com/api/users");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users`);
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -53,7 +53,7 @@ const ViewUsers: React.FC = () => {
   const deleteUser = async (id: number) => {
     setLoading(true);
     try {
-      const response = await fetch(`https://kam-ticket-express-api.onrender.com/api/users/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${id}`, {
         method: "DELETE",
       });
       if (response.ok) {
@@ -98,7 +98,7 @@ const ViewUsers: React.FC = () => {
         formData.append("profile_picture", selectedImage);
       }
 
-      const response = await fetch(`https://kam-ticket-express-api.onrender.com/api/users/${selectedUser?.id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${selectedUser?.id}`, {
         method: "PUT",
         body: formData,
       });
@@ -121,7 +121,7 @@ const ViewUsers: React.FC = () => {
       dataIndex: "profile_picture",
       key: "profile_picture",
       render: (profile_picture: string | null) => {
-        const imageUrl = profile_picture ? `https://kam-ticket-express-api.onrender.com/uploads/${profile_picture}` : "/default-avatar.png";
+        const imageUrl = profile_picture ? `${process.env.IMAGE_API_PATH}/${profile_picture}` : "/default-avatar.png";
         return <Avatar src={imageUrl} size={40} />;
       },
     },

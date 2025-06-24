@@ -1,5 +1,5 @@
 export const reassignUserToTicket = async (ticketId: any, userId: any): Promise<string> => {
-    const response = await fetch(`https://kam-ticket-express-api.onrender.com/api/tickets/${ticketId}/reassign`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tickets/${ticketId}/reassign`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ new_assigned_to: userId }),

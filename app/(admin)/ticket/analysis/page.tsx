@@ -32,11 +32,16 @@ import React from "react";
 import dynamic from "next/dynamic";
 
 import { HelpdeskMetrics } from "@/components/dashboard/HelpdeskMetrics";
+import MonthlyTicketsChart from "@/components/dashboard/MonthlyTicketsChart";
+import DepartmentTicketBreakdown from "@/components/dashboard/DepartmentTicketBreakdown";
+import HelpdeskStatisticsChart from "@/components/dashboard/HelpdeskStatisticsChart";
 
-const MonthlyTicketsChart = dynamic(() => import("@/components/dashboard/MonthlyTicketsChart"), { ssr: false });
-const DepartmentTicketBreakdown = dynamic(() => import("@/components/dashboard/DepartmentTicketBreakdown"), { ssr: false });
-const HelpdeskStatisticsChart = dynamic(() => import("@/components/dashboard/HelpdeskStatisticsChart"), { ssr: false });
-const AgentPerformanceOverview = dynamic(() => import("@/components/dashboard/RecentTicketsTable"), { ssr: false });
+
+
+
+
+
+const RecentTicketsTable = dynamic(() => import("@/components/dashboard/RecentTicketsTable"), { ssr: false });
 
 export default function HelpdeskDashboard() {
   return (
@@ -50,7 +55,7 @@ export default function HelpdeskDashboard() {
 
       <HelpdeskStatisticsChart />
 
-      <AgentPerformanceOverview />
+      <RecentTicketsTable />
     </div>
   );
 }

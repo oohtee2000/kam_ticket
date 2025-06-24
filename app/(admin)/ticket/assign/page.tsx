@@ -10,8 +10,8 @@ import { handleAssignUser } from './utils/handleAssignUser';
 
 const fetchAllData = async () => {
     const [userResponse, ticketResponse] = await Promise.all([
-        fetch('https://kam-ticket-express-api.onrender.com/api/users'),
-        fetch('https://kam-ticket-express-api.onrender.com/api/tickets/unassigned')
+        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users`),
+        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tickets/unassigned`)
     ]);
 
     if (!userResponse.ok || !ticketResponse.ok) {
@@ -68,9 +68,9 @@ const AssignTicket = () => {
             <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 p-8">
                 <div className="p-8 bg-white shadow-md rounded-lg text-center">
                     <h2 className="text-2xl font-bold mb-4">You don't have access to this page</h2>
-                    <Link href="/dashboard">
+                    <Link href="/home">
                         <Button type="primary" className="bg-blue-600 hover:bg-blue-700 text-white">
-                            Go to Dashboard
+                            Go to Home
                         </Button>
                     </Link>
                 </div>
@@ -83,7 +83,7 @@ const AssignTicket = () => {
 
         <div className="w-full px-6 py-8 bg-gray-50 min-h-screen">
   <div className="w-full bg-white shadow-md rounded-xl border border-gray-200 p-8">
-    <h1 className="text-4xl font-bold text-gray-900 mb-10">Assign User to Ticket</h1>
+    <h1 className="text-2xl font-bold text-gray-900 mb-10">Assign User to Ticket</h1>
 
     {message && (
       <Alert
@@ -107,7 +107,7 @@ const AssignTicket = () => {
             <Descriptions bordered column={1}>
               <Descriptions.Item label="Title">{selectedTicketDetails.title}</Descriptions.Item>
               <Descriptions.Item label="Subcategory">{selectedTicketDetails.subcategory}</Descriptions.Item>
-              <Descriptions.Item label="Description">{selectedTicketDetails.description}</Descriptions.Item>
+              <Descriptions.Item label="Description">{selectedTicketDetails.details}</Descriptions.Item>
               {selectedTicketDetails.image && (
                 <Descriptions.Item label="Image">
                   <Image src={selectedTicketDetails.image} alt="Ticket Image" width={100} />
