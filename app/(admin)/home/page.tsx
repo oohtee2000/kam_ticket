@@ -52,8 +52,8 @@ export default function Home() {
                 { label: "Re-assign Ticket", href: "/ticket/reassign", icon: Repeat2 },
                 { label: "Analytics Dashboard", href: "/ticket/analysis", icon: BarChart3 },
                 { label: "Change Ticket Status", href: "/ticket/status", icon: CircleCheck },
-                { label: "Add User", href: "/user/add", icon: UserPlus },
-                { label: "View Users", href: "/user/view", icon: Users },
+                { label: "Add User", href: "/users/add", icon: UserPlus },
+                { label: "View Users", href: "/users/view", icon: Users },
               ].map(({ label, href, icon: Icon }) => (
                 <Link
                   key={label}
