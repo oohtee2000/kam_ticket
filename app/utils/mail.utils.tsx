@@ -1,4 +1,4 @@
-
+//utils/mail.utils.tsx
 
 import { render } from "@react-email/render";
 import React from "react"; // Ensure React is imported for JSX
@@ -9,7 +9,7 @@ import WelcomeEmail from "../emails/WelcomeEmail"; // Ensure correct path
 import TicketSubmissionEmail from "../emails/TicketSubmissionEmail"; // Import the new component
 import TicketAssignedEmail from "../emails/TicketAssignedEmail"; 
 import TicketResolvedEmail from "../emails/TicketResolvedEmail";
-
+import TicketCommentEmail from "../emails/TicketCommentEmail";
 
 
 // Nodemailer transport setup
@@ -29,7 +29,7 @@ type SendEmailDto = {
   reciepients: Mail.Address[];
   subject: string;
   message?: string;
-  template?: "welcome" | "ticket_submission" | "ticket_assigned" | "ticket_resolved";
+  template?: "welcome" | "ticket_submission" | "ticket_assigned" | "ticket_resolved" |"ticket_comment";
   templateData?: Record<string, any>;
 };
 
@@ -78,6 +78,20 @@ if (template === "ticket_assigned" && templateData) {
         <TicketResolvedEmail name={name} title={title} ticketId={ticketId} resolvedBy={resolvedBy} />
       );
     }
+
+    if (template === "ticket_comment" && templateData) {
+  const { assigneeName, commenterName, ticketTitle, comment, ticketLink } = templateData;
+  htmlContent = await render(
+    <TicketCommentEmail
+      assigneeName={assigneeName}
+      commenterName={commenterName}
+      ticketTitle={ticketTitle}
+      comment={comment}
+      ticketLink={ticketLink}
+    />
+  );
+}
+
 
     console.log("📤 Sending email to:", reciepients.map(r => `"${r.name}" <${r.address}>`).join(", "));
 

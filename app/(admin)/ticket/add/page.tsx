@@ -2,6 +2,7 @@
 
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ITicket } from '@/components/type/Ticket';
 
 const CreateTicket: React.FC = () => {
@@ -122,6 +123,8 @@ const CreateTicket: React.FC = () => {
                     details: '',
                     image: null,
                 });
+
+                router.push('/home');
             } else {
                 alert("Error: " + data.error);
             }
@@ -130,6 +133,8 @@ const CreateTicket: React.FC = () => {
             alert("Something went wrong. Please try again.");
         }
     };
+
+    const router = useRouter();
 
     const categories: Record<string, string[]> = {
         'Accommodation/Housing Issues': [

@@ -1,7 +1,10 @@
 'use client';
 
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/useAuth'; // Assuming your useAuth is set up here
+import { Spin, message as antdMessage } from 'antd';
 
 const AddUser: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -16,6 +19,18 @@ const AddUser: React.FC = () => {
 
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
+    const router = useRouter();
+    const { user, loading: authLoading } = useAuth(); // useAuth provides `user` and `loading`
+
+    // Authorization Check
+    useEffect(() => {
+        if (!authLoading) {
+            if (!user || user.role !== 'Superadmin') {
+                antdMessage.warning('Unauthorized access');
+                router.push('/unauthorized');
+            }
+        }
+    }, [user, authLoading, router]);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -59,21 +74,17 @@ const AddUser: React.FC = () => {
             if (response.ok) {
                 setMessage("User added successfully!");
 
-
-
-            await fetch("/api/emails", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  sender: { name: "Your App", address: process.env.NEXT_PUBLIC_MAIL_USER },
-                  reciepients: [{ name: formData.name, address: formData.email }],
-                  subject: "Welcome to Our Platform!",
-                  template: "welcome",
-                  templateData: { name: formData.name },
-                }),
-              });
-              
-
+                await fetch("/api/emails", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        sender: { name: "Your App", address: process.env.NEXT_PUBLIC_MAIL_USER },
+                        reciepients: [{ name: formData.name, address: formData.email }],
+                        subject: "Welcome to Our Platform!",
+                        template: "welcome",
+                        templateData: { name: formData.name },
+                    }),
+                });
 
                 setFormData({
                     name: '',
@@ -94,6 +105,14 @@ const AddUser: React.FC = () => {
             setLoading(false);
         }
     };
+
+    if (authLoading || !user) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <Spin size="large" />
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
@@ -117,7 +136,7 @@ const AddUser: React.FC = () => {
                 <InputField label="Full Name" type="text" name="name" value={formData.name} onChange={handleChange} required />
                 <InputField label="Email Address" type="email" name="email" value={formData.email} onChange={handleChange} required />
                 <InputField label="Password (Auto-set as email)" type="text" name="password" value={formData.password} readOnly />
-                <SelectField label="Role" name="role" value={formData.role} onChange={handleChange} options={['Admin', 'User']} required />
+                <SelectField label="Role" name="role" value={formData.role} onChange={handleChange} options={['Admin']} required />
                 <SelectField label="Department" name="department" value={formData.department} onChange={handleChange} options={['IT', 'HR', 'Finance', 'Operations']} required />
                 <InputField label="Phone Number" type="text" name="phone_number" value={formData.phone_number} onChange={handleChange} required />
                 <InputField label="Profile Picture" type="file" name="profile_picture" accept="image/*" onChange={handleFileChange} />
@@ -130,7 +149,7 @@ const AddUser: React.FC = () => {
     );
 };
 
-// Reusable InputField component
+// InputField component
 const InputField: React.FC<{
     label: string;
     type: string;
@@ -147,7 +166,7 @@ const InputField: React.FC<{
     </div>
 );
 
-// Reusable SelectField component
+// SelectField component
 const SelectField: React.FC<{
     label: string;
     name: string;
@@ -167,7 +186,7 @@ const SelectField: React.FC<{
     </div>
 );
 
-// Reusable Label component
+// Label component
 const Label: React.FC<{ htmlFor: string; children: React.ReactNode }> = ({ htmlFor, children }) => (
     <label htmlFor={htmlFor} className="block mb-1 text-sm font-medium text-gray-700">{children}</label>
 );

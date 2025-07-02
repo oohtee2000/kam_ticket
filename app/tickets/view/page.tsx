@@ -56,19 +56,38 @@ const Page = () => {
         console.log('Fetched tickets:', raw)
   
         // Transform to expected shape
-        const processed: Ticket[] = raw.map((item: any) => ({
-          id: item.id,
-          title: item.name || 'Untitled Ticket',
-          details: item.email || 'No details provided',
-          date: item.created_at || new Date().toISOString(), // fallback
-          assignedTo: item.assigned_to ?? 'Unassigned',
-          status: item.status || 'Pending',
-          createdBy: item.created_by || 'System',
-          department: item.department || 'General',
-          image: item.image,
-          images: item.image ? [item.image] : [],
-        }))
+        // const processed: Ticket[] = raw.map((item: any) => ({
+        //   id: item.id,
+        //   title: item.name || 'Untitled Ticket',
+        //   details: item.email || 'No details provided',
+        //   date: item.created_at || new Date().toISOString(), // fallback
+        //   assignedTo: item.assigned_to ?? 'Unassigned',
+        //   status: item.status || 'Pending',
+        //   createdBy: item.created_by || 'System',
+        //   department: item.department || 'General',
+        //   image: item.image,
+        //   images: item.image ? [item.image] : [],
+        // }))
   
+
+        const processed: Ticket[] = raw.map((item: any) => {
+  const imageBasePath = process.env.NEXT_PUBLIC_IMAGE_API_PATH || '' // use NEXT_PUBLIC_ prefix so it's accessible in the browser
+  const imageUrl = item.image ? `${imageBasePath}/${item.image}` : undefined
+
+  return {
+    id: item.id,
+    title: item.name || 'Untitled Ticket',
+    details: item.email || 'No details provided',
+    date: item.created_at || new Date().toISOString(),
+    assignedTo: item.assigned_to ?? 'Unassigned',
+    status: item.status || 'Pending',
+    createdBy: item.created_by || 'System',
+    department: item.department || 'General',
+    image: imageUrl,
+    images: imageUrl ? [imageUrl] : [],
+  }
+})
+
         setTickets(processed)
   
         const openState = Object.fromEntries(processed.map((t) => [t.id, true]))

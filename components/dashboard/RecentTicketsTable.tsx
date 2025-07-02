@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Table, Dropdown, Button, Spin, message } from "antd";
-import { MoreOutlined } from "@ant-design/icons";
+import { Table, Spin, message } from "antd";
 
 interface Ticket {
   id: number;
@@ -9,13 +8,14 @@ interface Ticket {
   department: string;
   status: string;
   created_at: string;
+  category: string;
+  assigned_to: string | null; // In case the ticket is unassigned
 }
 
 export default function RecentTicketsTable() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Fetch recent tickets from backend
   useEffect(() => {
     const fetchRecentTickets = async () => {
       try {
@@ -35,13 +35,6 @@ export default function RecentTicketsTable() {
     fetchRecentTickets();
   }, []);
 
-  // Dropdown menu
-  const menuItems = [
-    { key: "1", label: "View Details" },
-    { key: "2", label: "Assign" },
-  ];
-
-  // Columns for Ant Design table
   const columns = [
     {
       title: "Title",
@@ -54,20 +47,27 @@ export default function RecentTicketsTable() {
       key: "department",
     },
     {
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
+    },
+    {
+      title: "Assigned To",
+      dataIndex: "assigned_to",
+      key: "assigned_to",
+      render: (name: string | null) => name || <span style={{ color: "gray" }}>Unassigned</span>,
+    },
+    {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (text: string) => {
+      render: (status: string) => {
         let color = "gray";
-        if (text === "Pending") color = "orange";
-        else if (text === "Resolved") color = "green";
-        else if (text === "Unresolved") color = "red";
+        if (status === "Pending") color = "orange";
+        else if (status === "Resolved") color = "green";
+        else if (status === "Unresolved") color = "red";
 
-        return (
-          <span style={{ color, fontWeight: 500 }}>
-            {text}
-          </span>
-        );
+        return <span style={{ color, fontWeight: 500 }}>{status}</span>;
       },
     },
     {
@@ -75,15 +75,6 @@ export default function RecentTicketsTable() {
       dataIndex: "created_at",
       key: "created_at",
       render: (val: string) => new Date(val).toLocaleString(),
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: () => (
-        <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
-          <Button shape="circle" icon={<MoreOutlined />} />
-        </Dropdown>
-      ),
     },
   ];
 
