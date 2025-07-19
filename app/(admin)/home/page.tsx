@@ -51,10 +51,10 @@ export default function Home() {
                 { label: "Assign Ticket", href: "/ticket/assign", icon: ShieldCheck },
                 { label: "Re-assign Ticket", href: "/ticket/reassign", icon: Repeat2 },
                 { label: "Analytics Dashboard", href: "/ticket/analysis", icon: BarChart3 },
-                { label: "Change Ticket Status", href: "/ticket/status", icon: CircleCheck },
+                { label: "Change Ticket Status", href: "/ticket/change-status", icon: CircleCheck },
                 { label: "Add User", href: "/users/add", icon: UserPlus },
                 { label: "View Users", href: "/users/view", icon: Users },
-              ].map(({ label, href, icon: Icon }) => (
+              ].map(({ label, href, icon: Icon }) => ( 
                 <Link
                   key={label}
                   href={href}
